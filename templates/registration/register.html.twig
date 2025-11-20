@@ -1,0 +1,519 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .register-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" opacity="0.05"><polygon fill="white" points="0,1000 1000,0 1000,1000"/></svg>');
+        background-size: cover;
+    }
+
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 25px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+        padding: 3rem;
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        z-index: 1;
+        animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 25px 25px 0 0;
+    }
+
+    .card-header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding: 0;
+        border: none;
+        background: transparent;
+    }
+
+    .card-header h1 {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 800;
+        font-size: 2.25rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .card-header h1 i {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: heartbeat 1.5s ease-in-out infinite;
+    }
+
+    @keyframes heartbeat {
+        0%, 100% { transform: scale(1); }
+        25% { transform: scale(1.1); }
+        50% { transform: scale(1); }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-label i {
+        color: #667eea;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control {
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1rem 1rem 1rem 3rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .input-icon {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #667eea;
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        z-index: 2;
+    }
+
+    .form-control:focus + .input-icon {
+        color: #764ba2;
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        margin-top: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .btn-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+
+    .btn-primary i {
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover i {
+        transform: translateX(3px);
+    }
+
+    .alert {
+        border-radius: 15px;
+        border: none;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: slideInDown 0.5s ease;
+        margin-bottom: 2rem;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.1));
+        color: #166534;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        box-shadow: 0 5px 20px rgba(34, 197, 94, 0.1);
+    }
+
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+        color: #dc2626;
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        box-shadow: 0 5px 20px rgba(239, 68, 68, 0.1);
+    }
+
+    .alert i {
+        margin-right: 0.5rem;
+    }
+
+    .form-errors {
+        color: #dc2626;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(239, 68, 68, 0.1);
+        border-radius: 8px;
+        border-left: 4px solid #dc2626;
+        animation: shake 0.5s ease;
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+
+    .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        overflow: hidden;
+    }
+
+    .shape {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .shape:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .shape:nth-child(2) {
+        width: 120px;
+        height: 120px;
+        top: 20%;
+        right: 10%;
+        animation-delay: 2s;
+    }
+
+    .shape:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+        }
+        33% {
+            transform: translateY(-20px) rotate(120deg);
+        }
+        66% {
+            transform: translateY(10px) rotate(240deg);
+        }
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .login-link p {
+        color: #64748b;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .login-link a:hover {
+        color: #764ba2;
+        transform: translateX(3px);
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .password-requirements {
+        font-size: 0.75rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+        padding: 0.75rem;
+        background: rgba(248, 250, 252, 0.8);
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+    }
+
+    .password-requirements ul {
+        margin: 0;
+        padding-left: 1rem;
+    }
+
+    .password-requirements li {
+        margin-bottom: 0.25rem;
+    }
+
+    @media (max-width: 768px) {
+        .register-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .card-header h1 {
+            font-size: 1.75rem;
+        }
+
+        .form-control {
+            padding: 0.875rem 0.875rem 0.875rem 2.5rem;
+        }
+
+        .input-icon {
+            left: 0.875rem;
+            font-size: 1.1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .register-container {
+            padding: 1rem;
+        }
+
+        .register-card {
+            padding: 1.5rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="register-container">
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+    
+    <div class="register-card">
+        <div class="card-header">
+            <h1>
+                <i class="bi bi-person-plus"></i>
+                <span>Create Account</span>
+            </h1>
+        </div>
+
+        <div class="card-body">
+            {# Flash Messages #}
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+            
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {{ form_start(registrationForm, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                
+                <div class="form-group">
+                    {{ form_label(registrationForm.firstname, 'First Name', {'label_attr': {'class': 'form-label'}}) }}
+                    <i class="bi bi-person input-icon"></i>
+                    {{ form_widget(registrationForm.firstname, {'attr': {'class': 'form-control', 'placeholder': 'Enter your first name'}}) }}
+                    {% if registrationForm.firstname.vars.errors|length > 0 %}
+                        <div class="form-errors">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ form_errors(registrationForm.firstname) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.lastname, 'Last Name', {'label_attr': {'class': 'form-label'}}) }}
+                    <i class="bi bi-person input-icon"></i>
+                    {{ form_widget(registrationForm.lastname, {'attr': {'class': 'form-control', 'placeholder': 'Enter your last name'}}) }}
+                    {% if registrationForm.lastname.vars.errors|length > 0 %}
+                        <div class="form-errors">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ form_errors(registrationForm.lastname) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.email, 'Email Address', {'label_attr': {'class': 'form-label'}}) }}
+                    <i class="bi bi-envelope input-icon"></i>
+                    {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'Enter your email address'}}) }}
+                    {% if registrationForm.email.vars.errors|length > 0 %}
+                        <div class="form-errors">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.password.first, 'Password', {'label_attr': {'class': 'form-label'}}) }}
+                    <i class="bi bi-lock input-icon"></i>
+                    {{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control', 'placeholder': 'Create a password'}}) }}
+                    {% if registrationForm.password.first.vars.errors|length > 0 %}
+                        <div class="form-errors">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ form_errors(registrationForm.password.first) }}
+                        </div>
+                    {% endif %}
+                    <div class="password-requirements">
+                        <strong>Password Requirements:</strong>
+                        <ul>
+                            <li>Minimum 6 characters</li>
+                            <li>At least one uppercase letter</li>
+                            <li>At least one number</li>
+                            <li>At least one special character</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(registrationForm.password.second, 'Confirm Password', {'label_attr': {'class': 'form-label'}}) }}
+                    <i class="bi bi-lock-fill input-icon"></i>
+                    {{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control', 'placeholder': 'Confirm your password'}}) }}
+                    {% if registrationForm.password.second.vars.errors|length > 0 %}
+                        <div class="form-errors">
+                            <i class="bi bi-exclamation-circle"></i>
+                            {{ form_errors(registrationForm.password.second) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-person-plus me-2"></i>Create Account
+                </button>
+            {{ form_end(registrationForm) }}
+
+            <div class="login-link">
+                <p>Already have an account?</p>
+                <a href="{{ path('app_login') }}">
+                    <i class="bi bi-box-arrow-in-right"></i>
+                    Sign In to Your Account
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

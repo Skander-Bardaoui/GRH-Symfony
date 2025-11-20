@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}HR System{% endblock %}</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        
+        <style>
+            :root {
+                --primary-color: #6366f1;
+                --primary-dark: #4f46e5;
+                --secondary-color: #8b5cf6;
+                --success-color: #10b981;
+                --warning-color: #f59e0b;
+                --danger-color: #ef4444;
+                --dark-bg: #0f172a;
+                --light-bg: #f8fafc;
+                --card-bg: #ffffff;
+                --text-primary: #1e293b;
+                --text-secondary: #64748b;
+                --border-color: #e2e8f0;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                position: relative;
+                overflow-x: hidden;
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: 
+                    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(138, 92, 246, 0.3), transparent 50%),
+                    radial-gradient(circle at 40% 20%, rgba(99, 102, 241, 0.2), transparent 50%);
+                pointer-events: none;
+                z-index: 0;
+                animation: gradientShift 15s ease infinite;
+            }
+
+            @keyframes gradientShift {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.8; }
+            }
+
+            /* Floating particles effect */
+            body::after {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    radial-gradient(2px 2px at 20% 30%, white, transparent),
+                    radial-gradient(2px 2px at 60% 70%, white, transparent),
+                    radial-gradient(1px 1px at 50% 50%, white, transparent),
+                    radial-gradient(1px 1px at 80% 10%, white, transparent),
+                    radial-gradient(2px 2px at 90% 60%, white, transparent),
+                    radial-gradient(1px 1px at 33% 80%, white, transparent);
+                background-size: 200% 200%;
+                opacity: 0.3;
+                animation: twinkle 8s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 0;
+            }
+
+            @keyframes twinkle {
+                0%, 100% { opacity: 0.3; }
+                50% { opacity: 0.5; }
+            }
+
+            .navbar {
+                background: rgba(15, 23, 42, 0.95) !important;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                padding: 1rem 0;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                transition: all 0.3s ease;
+            }
+
+            .navbar.scrolled {
+                padding: 0.5rem 0;
+                box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
+            }
+
+            .navbar-brand {
+                font-size: 1.5rem;
+                font-weight: 700;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .navbar-brand:hover {
+                transform: scale(1.05);
+            }
+
+            .navbar-brand i {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                font-size: 1.8rem;
+                animation: pulse 2s ease-in-out infinite;
+            }
+
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                padding: 0.5rem 1rem !important;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                margin: 0 0.25rem;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .nav-link::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s ease;
+            }
+
+            .nav-link:hover::before {
+                left: 100%;
+            }
+
+            .nav-link:hover {
+                color: #fff !important;
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+            }
+
+            .nav-link.active {
+                background: rgba(102, 126, 234, 0.3);
+                color: #fff !important;
+            }
+
+            .nav-link i {
+                margin-right: 0.5rem;
+                transition: transform 0.3s ease;
+            }
+
+            .nav-link:hover i {
+                transform: rotate(10deg) scale(1.1);
+            }
+
+            .navbar-text {
+                color: rgba(255, 255, 255, 0.9) !important;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                font-weight: 500;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            .navbar-text:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+
+            .btn-outline-light {
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                color: #fff;
+                font-weight: 600;
+                padding: 0.5rem 1.5rem;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-outline-light::before {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                transform: translate(-50%, -50%);
+                transition: width 0.6s ease, height 0.6s ease;
+            }
+
+            .btn-outline-light:hover::before {
+                width: 300px;
+                height: 300px;
+            }
+
+            .btn-outline-light:hover {
+                background: #fff;
+                color: var(--dark-bg);
+                border-color: #fff;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(255, 255, 255, 0.2);
+            }
+
+            .btn-outline-light i,
+            .btn-light i {
+                position: relative;
+                z-index: 1;
+            }
+
+            .btn-light {
+                background: #fff;
+                color: var(--dark-bg);
+                font-weight: 600;
+                padding: 0.5rem 1.5rem;
+                border-radius: 10px;
+                border: none;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-light::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
+                transition: left 0.6s ease;
+            }
+
+            .btn-light:hover::before {
+                left: 100%;
+            }
+
+            .btn-light:hover {
+                background: #f1f5f9;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
+            }
+
+            main.container {
+                position: relative;
+                z-index: 1;
+                padding-top: 2rem;
+                padding-bottom: 3rem;
+                animation: fadeInUp 0.6s ease;
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* Flash messages */
+            .alert {
+                border-radius: 15px;
+                border: none;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                animation: slideInDown 0.5s ease;
+            }
+
+            @keyframes slideInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .alert-success {
+                background: rgba(16, 185, 129, 0.9);
+                color: white;
+            }
+
+            .alert-danger {
+                background: rgba(239, 68, 68, 0.9);
+                color: white;
+            }
+
+            .alert-warning {
+                background: rgba(245, 158, 11, 0.9);
+                color: white;
+            }
+
+            .alert-info {
+                background: rgba(59, 130, 246, 0.9);
+                color: white;
+            }
+
+            /* Scrollbar styling */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: rgba(15, 23, 42, 0.3);
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                border-radius: 5px;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            }
+
+            /* Loading spinner */
+            .spinner-border {
+                border-color: rgba(255, 255, 255, 0.2);
+                border-right-color: white;
+            }
+
+            /* Mobile responsiveness */
+            @media (max-width: 991px) {
+                .navbar-collapse {
+                    background: rgba(15, 23, 42, 0.98);
+                    padding: 1rem;
+                    border-radius: 12px;
+                    margin-top: 1rem;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    animation: slideDown 0.3s ease;
+                }
+
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+
+                .navbar-nav {
+                    gap: 0.5rem;
+                }
+
+                .nav-link {
+                    margin: 0;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .navbar-brand {
+                    font-size: 1.25rem;
+                }
+
+                .navbar-brand i {
+                    font-size: 1.5rem;
+                }
+            }
+
+            /* Utility classes */
+            .glass-effect {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .gradient-text {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+        </style>
+
+        {% block stylesheets %}{% endblock %}
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bold" href="/">
+                    <i class="bi bi-people-fill"></i>
+                    <span>HR System</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" 
+                        data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        {% if app.user %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('admin_employee_index') }}">
+                                        <i class="bi bi-speedometer2"></i> Dashboard
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('admin_conges') }}">
+                                        <i class="bi bi-calendar-event-fill"></i> Manage Congés
+                                    </a>
+                                </li>
+                            {% endif %}
+                    
+                            {% if is_granted('ROLE_USER') and not is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ path('conge_index') }}">
+                                        <i class="bi bi-calendar-check"></i> My Congés
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        {% if app.user %}
+                            <li class="nav-item">
+                                <span class="navbar-text me-3">
+                                    <i class="bi bi-person-circle"></i> {{ app.user.email }}
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light" href="{{ path('app_logout') }}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="btn btn-light" href="{{ path('app_login') }}">
+                                    <i class="bi bi-box-arrow-right"></i> Login
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <main class="container mt-4">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('error') %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('warning') %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('info') %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="bi bi-info-circle me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+
+            {% block body %}{% endblock %}
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        
+        <script>
+            // Navbar scroll effect
+            window.addEventListener('scroll', function() {
+                const navbar = document.querySelector('.navbar');
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Auto-dismiss alerts after 5 seconds
+            document.addEventListener('DOMContentLoaded', function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    setTimeout(function() {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }, 5000);
+                });
+            });
+
+            // Add active class to current nav link
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('.nav-link');
+                
+                navLinks.forEach(function(link) {
+                    if (link.getAttribute('href') === currentPath) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        </script>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
