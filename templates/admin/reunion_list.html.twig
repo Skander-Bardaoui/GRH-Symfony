@@ -1,0 +1,345 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Manage Réunions - HR System{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .page-header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        backdrop-filter: blur(10px);
+        animation: slideInDown 0.6s ease;
+    }
+
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(99, 102, 241, 0.15);
+    }
+
+    .stat-card i {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card.pending i { color: #f59e0b; }
+    .stat-card.confirmed i { color: #10b981; }
+    .stat-card.cancelled i { color: #ef4444; }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-weight: 500;
+    }
+
+    .table-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        backdrop-filter: blur(10px);
+        animation: fadeIn 0.6s ease 0.4s backwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .table thead th {
+        border: none;
+        padding: 1.25rem 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.5px;
+    }
+
+    .table tbody tr {
+        border-bottom: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+
+    .table tbody tr:hover {
+        background: rgba(99, 102, 241, 0.05);
+        transform: scale(1.01);
+    }
+
+    .table tbody td {
+        padding: 1.25rem 1rem;
+        vertical-align: middle;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+    }
+
+    .status-confirmed {
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .employee-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .employee-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .empty-state {
+        padding: 4rem 2rem;
+        text-align: center;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1 class="gradient-text mb-2">
+        <i class="bi bi-people-fill"></i> Manage Réunions
+    </h1>
+    <p class="text-muted mb-0">Review and manage all meeting requests</p>
+</div>
+
+{% set pendingCount = reunions|filter(r => r.status == 'pending')|length %}
+{% set confirmedCount = reunions|filter(r => r.status == 'confirmed')|length %}
+{% set cancelledCount = reunions|filter(r => r.status == 'cancelled')|length %}
+
+<div class="stats-container">
+    <div class="stat-card pending">
+        <i class="bi bi-clock-history"></i>
+        <div class="stat-value">{{ pendingCount }}</div>
+        <div class="stat-label">Pending</div>
+    </div>
+    <div class="stat-card confirmed">
+        <i class="bi bi-check-circle"></i>
+        <div class="stat-value">{{ confirmedCount }}</div>
+        <div class="stat-label">Confirmed</div>
+    </div>
+    <div class="stat-card cancelled">
+        <i class="bi bi-x-circle"></i>
+        <div class="stat-value">{{ cancelledCount }}</div>
+        <div class="stat-label">Cancelled</div>
+    </div>
+</div>
+
+<div class="table-container">
+    {% if reunions|length > 0 %}
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th><i class="bi bi-person"></i> Employee</th>
+                    <th><i class="bi bi-bookmark"></i> Title</th>
+                    <th><i class="bi bi-calendar-event"></i> Date</th>
+                    <th><i class="bi bi-file-text"></i> Description</th>
+                    <th><i class="bi bi-flag"></i> Status</th>
+                    <th><i class="bi bi-gear"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reunion in reunions %}
+                    <tr>
+                        <td>
+                            <div class="employee-info">
+                                <div class="employee-avatar">
+                                    {{ reunion.employee.email|slice(0,1)|upper }}
+                                </div>
+                                <div>
+                                    <div class="fw-bold">{{ reunion.employee.email }}</div>
+                                    <small class="text-muted">ID: {{ reunion.employee.id }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong>{{ reunion.title }}</strong>
+                        </td>
+                        <td>
+                            <div>{{ reunion.date|date('M d, Y') }}</div>
+                            <small class="text-muted">{{ reunion.date|date('g:i A') }}</small>
+                        </td>
+                        <td>
+                            <small>{{ reunion.description|length > 50 ? reunion.description|slice(0, 50) ~ '...' : reunion.description }}</small>
+                        </td>
+                        <td>
+                            {% if reunion.status == 'pending' %}
+                                <span class="status-badge status-pending">
+                                    <i class="bi bi-clock-history"></i> Pending
+                                </span>
+                            {% elseif reunion.status == 'confirmed' %}
+                                <span class="status-badge status-confirmed">
+                                    <i class="bi bi-check-circle"></i> Confirmed
+                                </span>
+                            {% else %}
+                                <span class="status-badge status-cancelled">
+                                    <i class="bi bi-x-circle"></i> Cancelled
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if reunion.status == 'pending' %}
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('reunion_confirm', {id: reunion.id}) }}" 
+                                       class="btn btn-success btn-sm"
+                                       onclick="return confirm('Confirm this réunion?')">
+                                        <i class="bi bi-check"></i> Confirm
+                                    </a>
+                                    <a href="{{ path('reunion_cancel', {id: reunion.id}) }}" 
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Cancel this réunion?')">
+                                        <i class="bi bi-x"></i> Cancel
+                                    </a>
+                                </div>
+                            {% else %}
+                                <span class="text-muted">
+                                    <i class="bi bi-lock"></i> No actions
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-state">
+            <i class="bi bi-calendar-x"></i>
+            <h3 class="gradient-text mb-3">No Réunions Yet</h3>
+            <p class="text-muted">There are no meeting requests at the moment.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My Réunions - HR System{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .reunion-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        backdrop-filter: blur(10px);
+        animation: fadeInUp 0.6s ease backwards;
+    }
+
+    .reunion-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.2);
+        border-color: rgba(99, 102, 241, 0.3);
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .reunion-card:nth-child(1) { animation-delay: 0.1s; }
+    .reunion-card:nth-child(2) { animation-delay: 0.2s; }
+    .reunion-card:nth-child(3) { animation-delay: 0.3s; }
+    .reunion-card:nth-child(4) { animation-delay: 0.4s; }
+
+    .page-header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        backdrop-filter: blur(10px);
+        animation: slideInDown 0.6s ease;
+    }
+
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+
+    .status-pending {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
+    }
+
+    .status-confirmed {
+        background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        color: white;
+    }
+
+    .status-cancelled {
+        background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+        color: white;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s ease, height 0.6s ease;
+    }
+
+    .btn-primary:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(99, 102, 241, 0.4);
+    }
+
+    .reunion-date {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        padding: 4rem 2rem;
+        text-align: center;
+        border: 2px dashed rgba(99, 102, 241, 0.3);
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="gradient-text mb-2">
+                <i class="bi bi-people"></i> My Réunions
+            </h1>
+            <p class="text-muted mb-0">View and manage your meeting requests</p>
+        </div>
+        <a href="{{ path('reunion_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Request New Réunion
+        </a>
+    </div>
+</div>
+
+{% if reunions|length > 0 %}
+    <div class="row g-4">
+        {% for reunion in reunions %}
+            <div class="col-md-6 col-lg-4">
+                <div class="reunion-card">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <h5 class="card-title fw-bold mb-0">{{ reunion.title }}</h5>
+                            {% if reunion.status == 'pending' %}
+                                <span class="status-badge status-pending">
+                                    <i class="bi bi-clock-history"></i> Pending
+                                </span>
+                            {% elseif reunion.status == 'confirmed' %}
+                                <span class="status-badge status-confirmed">
+                                    <i class="bi bi-check-circle"></i> Confirmed
+                                </span>
+                            {% else %}
+                                <span class="status-badge status-cancelled">
+                                    <i class="bi bi-x-circle"></i> Cancelled
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="reunion-date mb-3">
+                            <i class="bi bi-calendar-event"></i>
+                            {{ reunion.date|date('l, F j, Y') }}
+                            <br>
+                            <small>{{ reunion.date|date('g:i A') }}</small>
+                        </div>
+
+                        <p class="card-text text-muted">
+                            <i class="bi bi-file-text"></i> {{ reunion.description|length > 100 ? reunion.description|slice(0, 100) ~ '...' : reunion.description }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <i class="bi bi-calendar-x"></i>
+        <h3 class="gradient-text mb-3">No Réunions Yet</h3>
+        <p class="text-muted mb-4">You haven't requested any meetings. Start by creating your first réunion request.</p>
+        <a href="{{ path('reunion_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Request Your First Réunion
+        </a>
+    </div>
+{% endif %}
+{% endblock %}
